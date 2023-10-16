@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# List of users
+target_users=("user1" "user2" "user3")  # Add your target user names here
+
+for user in "${target_users[@]}"
+do
+    # Copy .bash_profile
+    sudo cp "/Files/$user/.bash_profile" "/home/$user/.bash_profile"
+    sudo chown "$user:$user" "/home/$user/.bash_profile"
+
+    # Copy .profile
+    sudo cp "/Files/$user/.profile" "/home/$user/.profile"
+    sudo chown "$user:$user" "/home/$user/.profile"
+
+    echo "Copied .bash_profile and .profile for $user"
+done
