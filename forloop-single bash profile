@@ -1,0 +1,27 @@
+#!/bin/bash
+
+create_users() {
+    target_users=("user1" "user2" "user3")  # Add your target user names here
+
+    for user in "${target_users[@]}"
+    do
+        sudo adduser --disabled-password --gecos "" "$user"  # Create user without password
+        echo "Created user: $user"
+    done
+}
+
+copy_bash_profile() {
+    source_path="/Files/.bash_profile"  # Adjust the source path if needed
+    target_users=("user1" "user2" "user3")  # Add your target user names here
+
+    for user in "${target_users[@]}"
+    do
+        target_path="/home/$user/.bash_profile"
+        sudo cp "$source_path" "$target_path"
+        sudo chown "$user:$user" "$target_path"  # Set ownership to the user
+        echo "Copied .bash_profile to $target_path for $user"
+    done
+}
+
+create_users
+copy_bash_profile
