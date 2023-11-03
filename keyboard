@@ -1,0 +1,29 @@
+# Get the current list of user languages
+$UserLanguageList = Get-WinUserLanguageList
+
+# Find the index of en-GB language
+$enGBIndex = $UserLanguageList.IndexOf(($UserLanguageList | Where-Object LanguageTag -eq 'en-GB'))
+
+# If en-GB exists, set the input method to en-US keyboard
+if ($enGBIndex -ne -1) {
+    $UserLanguageList[$enGBIndex].InputMethodTips.Clear()
+    $UserLanguageList[$enGBIndex].InputMethodTips.Add("0409:00000409") # en-US keyboard
+}
+
+# Find the index of en-US language
+$enUSIndex = $UserLanguageList.IndexOf(($UserLanguageList | Where-Object LanguageTag -eq 'en-US'))
+
+# If en-US does not exist, add it
+if ($enUSIndex -eq -1) {
+    $newLang = New-WinUserLanguageList en-US
+    $UserLanguageList.Add($newLang[0])
+}
+
+# Set the first language to en-US to make it the default
+$UserLanguageList = $UserLanguageList | Where-Object LanguageTag -eq 'en-US' + $UserLanguageList | Where-Object LanguageTag -eq 'en-GB'
+
+# Apply the new language list setting for the current user
+Set-WinUserLanguageList $UserLanguageList -Force
+
+# Output the current language list to confirm the changes
+Get-WinUserLanguageList
